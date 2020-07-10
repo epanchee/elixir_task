@@ -1,0 +1,2 @@
+defmodule FunboxLinks.Database_functions do
+end
