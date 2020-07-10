@@ -4,7 +4,11 @@ services:
     build: .
     depends_on:
       - redis
+    environment:
+      - REDIS_ADDR=redis
     ports:
       - "4000:4000"
   redis:
     image: redis:5
+    expose:
+      - "6379"
