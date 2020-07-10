@@ -14,7 +14,10 @@ defmodule FunboxLinks.Database_functions do
 	end
 
 	def get_domains_info(%{"from" => from, "to" => to}) do
-		redix_cmd_result = Redix.command(:redix, ["ZRANGEBYSCORE", "timecodes", from, to])
+		redix_cmd_result = 
+			if from <= to, 
+				do: Redix.command(:redix, ["ZRANGEBYSCORE", "timecodes", from, to]),
+				else: {:error, nil}
 		case redix_cmd_result do
 			{:ok, timecodes} ->
 		  	result = Enum.map(timecodes, fn(timecode) -> ({_stat, _result} = Redix.command(:redix, ["LRANGE", timecode, 0, -1])) end)
