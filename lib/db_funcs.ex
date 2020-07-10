@@ -17,7 +17,7 @@ defmodule FunboxLinks.Database_functions do
 		redix_cmd_result = 
 			if from <= to, 
 				do: Redix.command(:redix, ["ZRANGEBYSCORE", "timecodes", from, to]),
-				else: {:error, nil}
+				else: {:error, []}
 		case redix_cmd_result do
 			{:ok, timecodes} ->
 		  	result = Enum.map(timecodes, fn(timecode) -> ({_stat, _result} = Redix.command(:redix, ["LRANGE", timecode, 0, -1])) end)
@@ -27,12 +27,12 @@ defmodule FunboxLinks.Database_functions do
 			  	|> Enum.uniq
 			  	|> fn(list) -> {:ok, list} end.()
 		  	else
-		  		{:error, nil}
+		  		{:error, []}
 		  	end
 			
 			{:error, _} -> 
 	  		Aux.ok?(:error, "ZRANGEBYSCORE")
-				{:error, nil}
+				{:error, []}
 		end
 	end
 end

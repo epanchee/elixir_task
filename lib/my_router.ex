@@ -16,13 +16,15 @@ defmodule FunboxLinks.Router do
 
   post "/visited_links" do
   	recv_time = :os.system_time(:millisecond)
-  	
+
   	{parse_status, parsed} = Aux.parse_domains(conn.body_params())
   	status_msg = parse_status
-	  	|> fn (parse_status) ->
-  			if Db.update_domains(recv_time, parsed) == :error or parse_status == :error, 
-  			do: "error",
-  			else: "ok"
+	  	|> fn 
+	  		:ok ->
+	  			if Db.update_domains(recv_time, parsed) == :error or parse_status == :error, 
+	  			do: "error",
+	  			else: "ok"
+	  		:error -> "error"
 	  	   end.()
 
     conn
@@ -33,16 +35,16 @@ defmodule FunboxLinks.Router do
   get "/visited_domains" do
   	{status, domains} = Db.get_domains_info(conn.query_params())
   	status_msg = 
-  	if status == :error do
-  		"error"
-  	else
-  		"ok"
-  	end
+  	status 
+  	|> fn
+		:ok -> "ok"
+		:error -> "error" 
+  	end.()
   	send_resp(conn, 200, Poison.encode!(%{status: status_msg, domains: domains}))
   end
 
   match _ do
     send_resp(conn, 404, "Requested page not found!")
   end
-  
+
 end
