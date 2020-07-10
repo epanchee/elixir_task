@@ -16,7 +16,7 @@ docker-compose up
 	* elixir ~> 1.9
 	* redis ~> 5
 
-```bash
+```
 git clone https://github.com/epanchee/elixir_task
 mix do deps.get, deps.compile, compile
 ```

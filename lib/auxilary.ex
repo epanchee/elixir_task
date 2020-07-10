@@ -2,7 +2,7 @@ defmodule FunboxLinks.Auxilary do
 	require Logger
 
 	def check_errors_in_array(arr) do
-		case Enum.any?(arr, fn(item) -> item |> elem(0) == :error end) do
+		case Enum.any?(arr, &elem(&1,0) == :error) do
 			true -> :error
 			false -> :ok
 		end
@@ -23,9 +23,9 @@ defmodule FunboxLinks.Auxilary do
 	end
 
 	def parse_domains(%{"links" => links}) do
-		parsed = Enum.map(links, fn(link) -> parse_single_domain(link) end)
+		parsed = Enum.map(links, &parse_single_domain/1)
 		status = check_errors_in_array(parsed)
-		{status, Enum.map(parsed, fn(p_res) -> p_res |> elem(1) end)}
+		{status, Enum.map(parsed, &elem(&1,1))}
 	end
 
 	def parse_domains(%{}) do
@@ -36,7 +36,7 @@ defmodule FunboxLinks.Auxilary do
 		case status do
 		:ok    -> Logger.info("#{msg} OK")
 		:error -> Logger.info("#{msg} ERROR")
-	end
+		end
 		status
 	end
 end

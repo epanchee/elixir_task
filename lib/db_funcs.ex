@@ -20,9 +20,10 @@ defmodule FunboxLinks.Database_functions do
 				else: {:error, []}
 		case redix_cmd_result do
 			{:ok, timecodes} ->
-		  	result = Enum.map(timecodes, fn(timecode) -> ({_stat, _result} = Redix.command(:redix, ["LRANGE", timecode, 0, -1])) end)
-		  	if result |> Aux.check_errors_in_array |> Aux.ok?("LRANGE") == :ok do
-			  	Enum.map(result, fn(r) -> r |> elem(1) end)
+		  	result = Enum.map(timecodes, fn(timecode) -> Redix.command(:redix, ["LRANGE", timecode, 0, -1]) end)
+		  	no_errors? = result |> Aux.check_errors_in_array |> Aux.ok?("LRANGE") == :ok
+		  	if no_errors? do
+			  	Enum.map(result, &elem(&1,1))
 			  	|> List.flatten 
 			  	|> Enum.uniq
 			  	|> fn(list) -> {:ok, list} end.()

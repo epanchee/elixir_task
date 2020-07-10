@@ -37,8 +37,8 @@ defmodule FunboxLinks.Router do
   	status_msg = 
   	status 
   	|> fn
-		:ok -> "ok"
-		:error -> "error" 
+  		:ok -> "ok"
+  		:error -> "error" 
   	end.()
   	send_resp(conn, 200, Poison.encode!(%{status: status_msg, domains: domains}))
   end
