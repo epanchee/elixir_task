@@ -1,21 +1,69 @@
 # FunboxLinks
 
-**TODO: Add description**
+## Installation (using docker)
 
-## Installation
+### Requirments
+	* docker-compose >= 1.26
+	* docker >= 19.03.12
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `funbox_links` to your list of dependencies in `mix.exs`:
+To install and run application simply type:
+```bash
+docker-compose up
+```
+## Usual installation
 
-```elixir
-def deps do
-  [
-    {:funbox_links, "~> 0.1.0"}
-  ]
-end
+### Requirments
+	* elixir ~> 1.9
+	* redis ~> 5
+
+```bash
+git clone https://github.com/epanchee/elixir_task
+mix do deps.get, deps.compile, compile
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/funbox_links](https://hexdocs.pm/funbox_links).
+Run the application
+```bash
+mix run --no-halt
+```
 
+## Usage
+FunboxLinks API will be available on the address `localhost:4000`.
+
+## Examples
+
+* Request
+```json
+POST /visited_links
+{
+	"links": [
+		"https://ya.ru",
+		"https://ya.ru?q=123",
+		"funbox.ru",
+		"https://stackoverflow.com/questions/11828270/how-to-exit-the-vim-editor"
+	]
+}
+```
+
+* Result
+```json
+{
+	"status": "ok"
+}
+```
+
+* Request
+```
+GET /visited_domains?from=1545221231&to=1545217638
+```
+
+* Result
+```json
+{
+	"domains": [
+		"ya.ru",
+		"funbox.ru",
+		"stackoverflow.com"
+	],
+	"status": "ok"
+}
+```
