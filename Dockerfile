@@ -1,0 +1,8 @@
+FROM elixir:1.9
+COPY . .
+RUN rm -rf _build deps
+RUN mix local.hex --force
+RUN mix local.rebar --force
+RUN mix do deps.get
+EXPOSE 4000
+RUN mix run --no-halt
