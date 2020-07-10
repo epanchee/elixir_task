@@ -2,8 +2,9 @@ version: "3"
 services:
   web:
     build: .
+    depends_on:
+      - redis
     ports:
       - "4000:4000"
-    network_mode: host
   redis:
     image: redis:5

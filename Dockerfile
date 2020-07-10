@@ -5,4 +5,4 @@ RUN mix local.hex --force
 RUN mix local.rebar --force
 RUN mix do deps.get
 EXPOSE 4000
-RUN mix run --no-halt
+CMD mix run --no-halt
