@@ -3,7 +3,7 @@ defmodule FunboxLinks.Router do
   alias FunboxLinks.Database_functions, as: Db
   alias FunboxLinks.Auxilary, as: Aux
   require Logger
-  
+
   plug(:match)
 
   plug(Plug.Parsers,
@@ -15,17 +15,21 @@ defmodule FunboxLinks.Router do
   plug(:dispatch)
 
   post "/visited_links" do
-  	recv_time = :os.system_time(:millisecond)
+    recv_time = :os.system_time(:millisecond)
 
-  	{parse_status, parsed} = Aux.parse_domains(conn.body_params())
-  	status_msg = parse_status
-	  	|> fn 
-	  		:ok ->
-	  			if Db.update_domains(recv_time, parsed) == :error or parse_status == :error, 
-	  			do: "error",
-	  			else: "ok"
-	  		:error -> "error"
-	  	   end.()
+    {parse_status, parsed} = Aux.parse_domains(conn.body_params())
+
+    status_msg =
+      parse_status
+      |> (fn
+            :ok ->
+              if Db.update_domains(recv_time, parsed) == :error or parse_status == :error,
+                do: "error",
+                else: "ok"
+
+            :error ->
+              "error"
+          end).()
 
     conn
     |> put_resp_content_type("application/json")
@@ -33,18 +37,19 @@ defmodule FunboxLinks.Router do
   end
 
   get "/visited_domains" do
-  	{status, domains} = Db.get_domains_info(conn.query_params())
-  	status_msg = 
-  	status 
-  	|> fn
-  		:ok -> "ok"
-  		:error -> "error" 
-  	end.()
-  	send_resp(conn, 200, Poison.encode!(%{status: status_msg, domains: domains}))
+    {status, domains} = Db.get_domains_info(conn.query_params())
+
+    status_msg =
+      status
+      |> (fn
+            :ok -> "ok"
+            :error -> "error"
+          end).()
+
+    send_resp(conn, 200, Poison.encode!(%{status: status_msg, domains: domains}))
   end
 
   match _ do
     send_resp(conn, 404, "Requested page not found!")
   end
-
 end

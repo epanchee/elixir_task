@@ -3,13 +3,17 @@ defmodule FunboxLinks.Application do
   require Logger
 
   def start(_type, _args) do
-    IO.puts Mix.env
-    port = fn 
-      :test -> 4001
-      _ -> 4000
-    end.(Mix.env)
+    IO.puts(Mix.env())
+
+    port =
+      (fn
+         :test -> 4001
+         _ -> 4000
+       end).(Mix.env())
+
     children = [
-      {Plug.Cowboy, scheme: :http, plug: FunboxLinks.Router, options: [port: port, ip: {0,0,0,0}]},
+      {Plug.Cowboy,
+       scheme: :http, plug: FunboxLinks.Router, options: [port: port, ip: {0, 0, 0, 0}]},
       {Redix, name: :redix, host: System.get_env("REDIS_ADDR"), port: 6379}
     ]
 
