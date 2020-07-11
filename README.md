@@ -6,7 +6,7 @@ Install and run application:
 ```bash
 docker-compose up -d
 ```
-Run unit test inside docker:
+Run unit tests inside docker:
 ```bash
 docker-compose exec web mix test
 ```

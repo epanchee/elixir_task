@@ -42,7 +42,7 @@ defmodule FunboxLinks.Auxilary.Test do
   end
 
   test "ok? logger" do
-    assert Aux.ok?(:ok, "test") == :ok
-    assert Aux.ok?(:error, "test") == :error
+    assert Aux.log(:ok, "test") == :ok
+    assert Aux.log(:error, "test") == :error
   end
 end

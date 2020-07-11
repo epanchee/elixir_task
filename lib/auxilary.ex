@@ -18,7 +18,7 @@ defmodule FunboxLinks.Auxilary do
         _ -> :ok
       end
 
-    ok?(status, "Parse URL")
+    log(status, "Parse URL")
     {status, result}
   end
 
@@ -33,10 +33,10 @@ defmodule FunboxLinks.Auxilary do
     {:error, nil}
   end
 
-  def ok?(status, msg) do
+  def log(status, msg) do
     case status do
       :ok -> Logger.info("#{msg} OK")
-      :error -> Logger.info("#{msg} ERROR")
+      :error -> Logger.error("#{msg} ERROR")
     end
 
     status

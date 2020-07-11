@@ -4,19 +4,20 @@ defmodule FunboxLinks.Database_functions do
   def update_domains(recv_time, domains) do
     domains_list = Enum.flat_map(domains, fn domain -> [recv_time, "#{recv_time}_#{domain}"] end)
 
-    IO.inspect(
-      Redix.command(:redix, ["ZADD", "timecodes"] ++ domains_list)
-      |> elem(0)
-      |> Aux.ok?(~S<ZADD "timecodes">)
-    )
+    Redix.command(:redix, ["ZADD", "timecodes"] ++ domains_list)
+    |> elem(0)
+    |> Aux.log(~S<ZADD "timecodes">)
   end
 
   def get_domains_info(%{"from" => from, "to" => to}) do
     if from <= to do
-      redix_cmd_result = Redix.command(:redix, ["ZRANGEBYSCORE", "timecodes", from, to])
+      {status, result} = Redix.command(:redix, ["ZRANGEBYSCORE", "timecodes", from, to])
 
-      if Aux.ok?(elem(redix_cmd_result, 0), "ZRANGEBYSCORE") == :ok do
-        Enum.map(elem(redix_cmd_result, 1), &(String.split(&1, "_") |> Enum.at(1)))
+      if Aux.log(status, "ZRANGEBYSCORE") == :ok do
+        Enum.map(result, fn link ->
+          ind_ = :binary.match(link, "_") |> elem(0)
+          String.slice(link, ind_+1..-1)
+        end)
         |> Enum.uniq()
         |> (fn list -> {:ok, list} end).()
       else
