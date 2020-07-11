@@ -2,14 +2,19 @@
 
 ## Installation (using docker)
 
-### Requirments
-	* docker-compose >= 1.26
-	* docker >= 19.03.12
-
-To install and run application simply type:
+Install and run application:
 ```bash
-docker-compose up
+docker-compose up -d
 ```
+Run unit test inside docker:
+```bash
+docker-compose exec web mix test
+```
+Stop application:
+```bash
+docker-compose down
+```
+
 ## Usual installation
 
 ### Requirments
@@ -19,6 +24,7 @@ docker-compose up
 ```
 git clone https://github.com/epanchee/elixir_task
 mix do deps.get, deps.compile, compile
+export REDIS_ADDR=[put your redis server address here]
 ```
 
 Run the application
