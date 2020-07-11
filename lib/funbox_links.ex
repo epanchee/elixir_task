@@ -3,8 +3,6 @@ defmodule FunboxLinks.Application do
   require Logger
 
   def start(_type, _args) do
-    IO.puts(Mix.env())
-
     port =
       (fn
          :test -> 4001

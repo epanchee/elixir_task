@@ -37,7 +37,7 @@ defmodule FunboxLinks.Auxilary.Test do
 
   test "parse_domains, :error" do
     domains = %{"links" => ~w<www.ya.ru funbox.ru https://vk.com rly_bad_str>}
-    valid_domains = ~w<ya.ru funbox.ru vk.com> ++ [nil]
+    valid_domains = ~w<ya.ru funbox.ru vk.com>
     assert Aux.parse_domains(domains) == {:error, valid_domains}
   end
 

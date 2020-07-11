@@ -19,17 +19,17 @@ defmodule FunboxLinks.Router do
 
     {parse_status, parsed} = Aux.parse_domains(conn.body_params())
 
-    status_msg =
-      parse_status
-      |> (fn
-            :ok ->
-              if Db.update_domains(recv_time, parsed) == :error or parse_status == :error,
-                do: "error",
-                else: "ok"
+    update_status =
+      if not is_nil(parsed) do
+        Db.update_domains(recv_time, parsed)
+      end
 
-            :error ->
-              "error"
-          end).()
+    status_msg =
+      if parse_status == :error or update_status == :error do
+        "error"
+      else
+        "ok"
+      end
 
     conn
     |> put_resp_content_type("application/json")
