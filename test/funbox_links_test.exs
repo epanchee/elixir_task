@@ -25,14 +25,14 @@ defmodule FunboxLinks.Router.Test do
   end
 
   test "check /visited_domains, valid query" do
-  	Db.update_domains(1110, ~w<vk.com google.com> |> Enum.sort)
+  	Db.update_domains(1110, ~w<vk.com google.com>)
     response = conn(:get, "/visited_domains", %{from: 0, to: 2000})
     		   |> put_resp_content_type("application/json")
     		   |> Router.call([])
 
     assert response.status == 200
     assert Poison.decode!(response.resp_body)["status"] == "ok"
-    assert Poison.decode!(response.resp_body)["domains"] == ~w<vk.com google.com> |> Enum.sort  	
+    assert Poison.decode!(response.resp_body)["domains"] |> Enum.sort == ~w<vk.com google.com> |> Enum.sort  	
   end
 
   test "check /visited_domains, invalid query" do
