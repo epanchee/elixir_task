@@ -1,10 +1,19 @@
 defmodule FunboxLinks.Router.Test do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   use Plug.Test
   alias FunboxLinks.Router, as: Router
   alias FunboxLinks.Database_functions, as: Db
 
-  Router.init([])
+  setup_all do
+    Router.init([])
+    :ok
+  end
+
+  setup do
+    Redix.command!(:redix, ["SELECT", 1])
+    Redix.command!(:redix, ["FLUSHDB"])
+    :ok
+  end
 
   test "check /visited_links, empty query" do
     response =

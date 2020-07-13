@@ -1,6 +1,15 @@
 defmodule FunboxLinks.Database_functions.Test do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   alias FunboxLinks.Database_functions, as: Db
+
+  setup do
+    Redix.command!(:redix, ["SELECT", 1])
+
+    on_exit(fn ->
+      Redix.command!(:redix, ["SELECT", 1])
+      Redix.command!(:redix, ["FLUSHDB"])
+    end)
+  end
 
   test "insert/get test, :ok" do
     Db.update_domains(111, ~w<vk.com google.com>)
