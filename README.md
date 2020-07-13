@@ -6,6 +6,7 @@ Install and run application:
 ```bash
 docker-compose up -d
 ```
+Wait until compilation finished and then start using the application.
 Run unit tests inside docker:
 ```bash
 docker-compose exec web mix test
