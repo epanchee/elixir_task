@@ -15,7 +15,7 @@ defmodule FunboxLinks.Database_functions do
 
       if Aux.log(status, "ZRANGEBYSCORE") == :ok do
         Enum.map(result, fn link ->
-          ind_ = :binary.match(link, "_") |> elem(0)
+          {ind_, _} = :binary.match(link, "_")
           String.slice(link, ind_+1..-1)
         end)
         |> Enum.uniq()
