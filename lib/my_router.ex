@@ -19,13 +19,20 @@ defmodule FunboxLinks.Router do
 
     status =
       try do
-        {parse_status, parsed} = Aux.parse_domains(conn.body_params())
-        Db.update_domains(recv_time, parsed)
-        if parse_status != :error, do: "ok", else: "error"
+        parse_result = Aux.parse_domains(conn.body_params())
+        valid_domains = 
+        Enum.filter(parse_result, fn {status, _} -> status == :ok end)
+        |> Enum.map(fn {_, link} -> link end)
+        invalid_domains =
+        Enum.filter(parse_result, fn {status, _} -> status == :error end)
+        |> Enum.map(fn {_, domain} -> domain end)
+        Db.update_domains(recv_time, valid_domains)
+        if length(invalid_domains) == 0, do: "ok", 
+        else: "Failed to parse domains: " <> Enum.join(invalid_domains, ",")
       rescue
         e ->
           Aux.log(:error, e.message)
-          "error"
+          e.message
       end
 
     conn
@@ -41,7 +48,7 @@ defmodule FunboxLinks.Router do
       rescue
         e ->
           Aux.log(:error, e.message)
-          {[], "error"}
+          {[], "error: " <> e.message}
       end
 
     send_resp(conn, 200, Poison.encode!(%{status: status_msg, domains: domains}))

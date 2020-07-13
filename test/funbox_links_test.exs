@@ -22,7 +22,7 @@ defmodule FunboxLinks.Router.Test do
       |> Router.call([])
 
     assert response.status == 200
-    assert Poison.decode!(response.resp_body)["status"] == "error"
+    assert Poison.decode!(response.resp_body)["status"] == "Empty domain list"
   end
 
   test "check /visited_links, valid query" do
@@ -59,7 +59,7 @@ defmodule FunboxLinks.Router.Test do
       |> Router.call([])
 
     assert response.status == 200
-    assert Poison.decode!(response.resp_body)["status"] == "error"
+    assert Poison.decode!(response.resp_body)["status"] == "error: Wrong timestamp interval. from > to"
     assert Poison.decode!(response.resp_body)["domains"] == []
   end
 

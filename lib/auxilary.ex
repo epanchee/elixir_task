@@ -12,10 +12,10 @@ defmodule FunboxLinks.Auxilary do
     regex = ~r/(https?:\/\/)?(www[.])?(?<domain>[\w.]+[.]\w+)/i
     result = Regex.named_captures(regex, domain_string)["domain"]
 
-    status =
+    {status, result} =
       case result do
-        nil -> :error
-        _ -> :ok
+        nil -> {:error, domain_string}
+        _ -> {:ok, result}
       end
 
     log(status, "Parse URL")
@@ -23,10 +23,11 @@ defmodule FunboxLinks.Auxilary do
   end
 
   def parse_domains(%{"links" => links}) when length(links) > 0 do
-    parsed = Enum.map(links, &parse_single_domain/1)
-    status = check_errors_in_array(parsed)
-    parsed = Enum.filter(parsed, fn {_, domain} -> not is_nil(domain) end)
-    {status, Enum.map(parsed, &elem(&1, 1))}
+    Enum.map(links, &parse_single_domain/1) 
+    # |> Enum.map(&elem(&1, 1))
+    # status = check_errors_in_array(parsed)
+    # parsed = Enum.filter(parsed, fn {_, domain} -> not is_nil(domain) end)
+    # {status, Enum.map(parsed, &elem(&1, 1))}
   end
 
   def parse_domains(%{}) do
