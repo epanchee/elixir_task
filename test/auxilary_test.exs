@@ -2,16 +2,6 @@ defmodule FunboxLinks.Auxilary.Test do
   use ExUnit.Case
   alias FunboxLinks.Auxilary, as: Aux
 
-  test "check_errors_in_array test, :ok" do
-    arr = [{:ok, nil}, {:ok, []}, {:ok, ["1", "2", "three"]}]
-    assert Aux.check_errors_in_array(arr) == :ok
-  end
-
-  test "check_errors_in_array test, :error" do
-    arr = [{:ok, nil}, {:error, []}, {:ok, ["1", "2", "three"]}]
-    assert Aux.check_errors_in_array(arr) == :error
-  end
-
   test "parse_single_domain, :ok - 1" do
     assert Aux.parse_single_domain("https://www.vk.com") == {:ok, "vk.com"}
   end

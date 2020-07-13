@@ -1,13 +1,6 @@
 defmodule FunboxLinks.Auxilary do
   require Logger
 
-  def check_errors_in_array(arr) do
-    case Enum.any?(arr, &(elem(&1, 0) == :error)) do
-      true -> :error
-      false -> :ok
-    end
-  end
-
   def parse_single_domain(domain_string) do
     regex = ~r/(https?:\/\/)?(www[.])?(?<domain>[\w.]+[.]\w+)/i
     result = Regex.named_captures(regex, domain_string)["domain"]
