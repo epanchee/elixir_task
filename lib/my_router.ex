@@ -17,34 +17,32 @@ defmodule FunboxLinks.Router do
   post "/visited_links" do
     recv_time = :os.system_time(:millisecond)
 
-    {parse_status, parsed} = Aux.parse_domains(conn.body_params())
-
-    update_status =
-      if not is_nil(parsed) do
+    status =
+      try do
+        {parse_status, parsed} = Aux.parse_domains(conn.body_params())
         Db.update_domains(recv_time, parsed)
-      end
-
-    status_msg =
-      if parse_status == :error or update_status == :error do
-        "error"
-      else
-        "ok"
+        if parse_status != :error, do: "ok", else: "error"
+      rescue
+        e ->
+          Aux.log(:error, e.message)
+          "error"
       end
 
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(200, Poison.encode!(%{status: status_msg}))
+    |> send_resp(200, Poison.encode!(%{status: status}))
   end
 
   get "/visited_domains" do
-    {status, domains} = Db.get_domains_info(conn.query_params())
-
-    status_msg =
-      status
-      |> (fn
-            :ok -> "ok"
-            :error -> "error"
-          end).()
+    {domains, status_msg} =
+      try do
+        domains = Db.get_domains_info(conn.query_params())
+        {domains, "ok"}
+      rescue
+        e ->
+          Aux.log(:error, e.message)
+          {[], "error"}
+      end
 
     send_resp(conn, 200, Poison.encode!(%{status: status_msg, domains: domains}))
   end

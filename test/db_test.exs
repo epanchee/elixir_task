@@ -3,22 +3,26 @@ defmodule FunboxLinks.Database_functions.Test do
   alias FunboxLinks.Database_functions, as: Db
 
   test "insert/get test, :ok" do
-    assert Db.update_domains(111, ~w<vk.com google.com>) == :ok
-    {status, domains_info} = Db.get_domains_info(%{"from" => 111, "to" => 111})
-    assert {status, domains_info |> Enum.sort()} == {:ok, ~w<vk.com google.com> |> Enum.sort()}
+    Db.update_domains(111, ~w<vk.com google.com>)
+    domains = Db.get_domains_info(%{"from" => 111, "to" => 111})
+    assert Enum.sort(domains) == Enum.sort(~w<vk.com google.com>)
   end
 
   test "insert/get test with equal timestamps, :ok" do
-    assert Db.update_domains(222, ~w<test.com>) == :ok
-    assert Db.update_domains(222, ~w<www.onemore.ru>) == :ok
-    {status, domains_info} = Db.get_domains_info(%{"from" => 222, "to" => 222})
+    Db.update_domains(222, ~w<test.com>)
+    Db.update_domains(222, ~w<www.onemore.ru>)
+    domains = Db.get_domains_info(%{"from" => 222, "to" => 222})
 
-    assert {status, domains_info |> Enum.sort()} ==
-             {:ok, ~w<test.com www.onemore.ru> |> Enum.sort()}
+    assert Enum.sort(domains) == Enum.sort(~w<test.com www.onemore.ru>)
   end
 
   test "insert/get test, expose DB error, :error" do
-    assert Db.update_domains("aaa", ~w<bbc.com www.moex.ru>) == :error
-    assert Db.get_domains_info(%{"from" => "aaa", "to" => "aaa"}) == {:error, []}
+    assert_raise Redix.Error, "ERR value is not a valid float", fn ->
+      Db.update_domains("aaa", ~w<bbc.com www.moex.ru>)
+    end
+
+    assert_raise Redix.Error, "ERR min or max is not a float", fn ->
+      Db.get_domains_info(%{"from" => "aaa", "to" => "aaa"}) == {:error, []}
+    end
   end
 end

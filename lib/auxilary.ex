@@ -22,7 +22,7 @@ defmodule FunboxLinks.Auxilary do
     {status, result}
   end
 
-  def parse_domains(%{"links" => links}) do
+  def parse_domains(%{"links" => links}) when length(links) > 0 do
     parsed = Enum.map(links, &parse_single_domain/1)
     status = check_errors_in_array(parsed)
     parsed = Enum.filter(parsed, fn {_, domain} -> not is_nil(domain) end)
@@ -30,7 +30,11 @@ defmodule FunboxLinks.Auxilary do
   end
 
   def parse_domains(%{}) do
-    {:error, nil}
+    raise EmptyDomainsListError
+  end
+
+  def parse_domains(%{"links" => []}) do
+    raise EmptyDomainsListError
   end
 
   def log(status, msg) do
@@ -41,4 +45,12 @@ defmodule FunboxLinks.Auxilary do
 
     status
   end
+end
+
+defmodule EmptyDomainsListError do
+  defexception message: "Empty domain list"
+end
+
+defmodule WrongTimestampInterval do
+  defexception message: "Wrong timestamp interval. from > to"
 end
