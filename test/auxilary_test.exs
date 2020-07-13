@@ -1,7 +1,6 @@
 defmodule FunboxLinks.Auxilary.Test do
   use ExUnit.Case
   alias FunboxLinks.Auxilary, as: Aux
-  # doctest FunboxLinks.Auxilary
 
   test "check_errors_in_array test, :ok" do
     arr = [{:ok, nil}, {:ok, []}, {:ok, ["1", "2", "three"]}]

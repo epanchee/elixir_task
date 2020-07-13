@@ -24,10 +24,6 @@ defmodule FunboxLinks.Auxilary do
 
   def parse_domains(%{"links" => links}) when length(links) > 0 do
     Enum.map(links, &parse_single_domain/1) 
-    # |> Enum.map(&elem(&1, 1))
-    # status = check_errors_in_array(parsed)
-    # parsed = Enum.filter(parsed, fn {_, domain} -> not is_nil(domain) end)
-    # {status, Enum.map(parsed, &elem(&1, 1))}
   end
 
   def parse_domains(%{}) do
