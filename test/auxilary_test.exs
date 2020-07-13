@@ -21,6 +21,10 @@ defmodule FunboxLinks.Auxilary.Test do
     assert Aux.parse_single_domain("funbox.ru") == {:ok, "funbox.ru"}
   end
 
+  test "parse_single_domain, :ok - 3" do
+    assert Aux.parse_single_domain("eto_test.ru?first_var=1") == {:ok, "eto_test.ru"}
+  end
+
   test "parse_single_domain, :error" do
     assert Aux.parse_single_domain("vk..") == {:error, "vk.."}
   end
